@@ -171,7 +171,6 @@ class DocumentManager:
             query_embeddings=[query_embedding],
             n_results=n_results
         )
-        print(results)
         
         if results and 'documents' in results:
             return results['documents'][0][0]
@@ -181,28 +180,32 @@ class DocumentManager:
 
     def generate_response(self, data, prompt, ollama_model="qwen:0.5b"):
 
-        stream = ollama.chat(
+        output = ollama.generate(
             model=ollama_model,
-            messages=[{'role': 'user', 'content': f"Usando questi dati: {data}. Rispondi a questo prompt in italiano: {prompt}"}],
-            stream=True
+            prompt=f"Utilizzando i seguinti dati: {data}. rispondi al propt in italiano: {prompt}"
         )
-        for chunk in stream:
-            print(chunk['message']['content'], end='', flush=True)
+        print(output['response'])
 
 reader = FileReader()
 
 doc_manager = DocumentManager()
 
-while True :
+while True:
     print("\nMenu:")
     print("1. Inserisci documento")
     print("2. Fai una domanda")
     print("3. Esci\n")
     action = input()
-    if int(action) == 1 :
-        documento = input('dragga e droppa il tuo documento qui e poi clicca invio : ')
+    
+    if action == '1':
+        documento = input('Dragga e droppa il tuo documento qui e poi clicca invio: ')
         doc_manager.insert_document(reader.read_file(documento))
-    if int(action) == 2 :
-        prompt =  input('fai la tua domanda : ')
+    elif action == '2':
+        prompt = input('Fai la tua domanda: ')
         data = doc_manager.retrieve_document(prompt)
-        doc_manager.generate_response(data,prompt)
+        doc_manager.generate_response(data, prompt)
+    elif action == '3':
+        print("Uscita dal programma...")
+        break
+    else:
+        print("Opzione non valida. Riprova.")
