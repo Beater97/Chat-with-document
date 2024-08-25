@@ -179,7 +179,7 @@ class DocumentManager:
             print("Nessun risultato trovato.")
             return None
 
-    def generate_response(self, data, prompt, ollama_model="gwen:0.5b"):
+    def generate_response(self, data, prompt, ollama_model="qwen:0.5b"):
 
         stream = ollama.chat(
             model=ollama_model,
